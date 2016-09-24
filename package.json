@@ -1,0 +1,19 @@
+{
+  "name": "graphiql-browser",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/matthewkimber/graphiql-browser.git"
+  },
+  "author": "Matthew Kimber <matthew.s.kimber@navitaire.com>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/matthewkimber/graphiql-browser/issues"
+  },
+  "homepage": "https://github.com/matthewkimber/graphiql-browser#readme"
+}
