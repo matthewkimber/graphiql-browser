@@ -9,6 +9,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <title>GraphiQL Browser</title>
     <style>
       body {
         height: 100%;
@@ -28,6 +29,27 @@
 
       #graphql-api-url {
         width: 350px;
+        border: 1px solid #bbb;
+        padding: 4px;
+        font-family: system, -apple-system, 'San Francisco', '.SFNSDisplay-Regular', 'Segoe UI', Segoe, 'Segoe WP', 'Helvetica Neue', helvetica, 'Lucida Grande', arial, sans-serif;
+      }
+
+      #graphql-api-go {
+        background: #fdfdfd;
+        background: -webkit-linear-gradient(#fbfbfb, #f8f8f8);
+        background:         linear-gradient(#fbfbfb, #f8f8f8);
+        border-width: 0.5px;
+        border-style: solid;
+        border-color: #d3d3d3 #d0d0d0 #bababa;
+        border-radius: 4px;
+        box-shadow: 0 1px 1px -1px rgba(0, 0, 0, 0.13), inset 0 1px #fff;
+        color: #444;
+        cursor: pointer;
+        display: inline-block;
+        margin: 0 5px 0;
+        padding: 2px 8px 4px;
+        text-decoration: none;
+        font-size: 18px;
       }
     </style>
     <link rel="stylesheet" href="./css/graphiql.css" />
@@ -39,7 +61,7 @@
   <body>
     <div>
       <div class="address-bar">
-        Endpoint URL: <input type="text" id="graphql-api-url"> <input type="button" id="graphql-api-go" value="Go">
+        Endpoint URL: <input type="text" id="graphql-api-url"> <input type="button" id="graphql-api-go" class="toolbar-button" value="Go">
       </div>
       <div id="graphiql"></div>
     </div>
