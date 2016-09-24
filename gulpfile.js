@@ -15,7 +15,7 @@ var babel = require('gulp-babel');
 gulp.task('default', ['clean', 'build', 'copy-graphiql-dependencies', 'copy-vendor-dependencies', 'copy-html']);
 
 gulp.task('clean', function() {
-    return del(['./dist/**/*']);
+    return del(['./dist/**/*', './dist']);
 });
 
 gulp.task('build', function() {
