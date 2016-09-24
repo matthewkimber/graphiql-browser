@@ -15,9 +15,19 @@
         margin: 0;
         width: 100%;
         overflow: hidden;
+        font-family: system, -apple-system, 'San Francisco', '.SFNSDisplay-Regular', 'Segoe UI', Segoe, 'Segoe WP', 'Helvetica Neue', helvetica, 'Lucida Grande', arial, sans-serif;
       }
       #graphiql {
         height: 100vh;
+        background: #ccc;
+      }
+
+      .address-bar {
+        padding: 20px 0 25px 15px;
+      }
+
+      #graphql-api-url {
+        width: 350px;
       }
     </style>
     <link rel="stylesheet" href="./css/graphiql.css" />
@@ -27,8 +37,40 @@
     <script src="./js/graphiql.js"></script>
   </head>
   <body>
-    <div id="graphiql">Loading...</div>
+    <div>
+      <div class="address-bar">
+        Endpoint URL: <input type="text" id="graphql-api-url"> <input type="button" id="graphql-api-go" value="Go">
+      </div>
+      <div id="graphiql"></div>
+    </div>
     <script>
+      var apiEndpointUrl = document.getElementById('graphql-api-url');
+      var goButton = document.getElementById('graphql-api-go');
+
+      goButton.addEventListener('click', function (event) {
+        console.log(apiEndpointUrl.value);
+        settings.graphApiUrl = apiEndpointUrl.value;
+        
+        console.log('unmounting react component...');
+        ReactDOM.unmountComponentAtNode(document.getElementById('graphiql'));
+        console.log('unmounted!')
+
+        console.log('rendering graphiql react component...');
+        ReactDOM.render(
+          React.createElement(GraphiQL, {
+            fetcher: graphQLFetcher,
+            query: parameters.query,
+            variables: parameters.variables,
+            operationName: parameters.operationName,
+            onEditQuery: onEditQuery,
+            onEditVariables: onEditVariables,
+            onEditOperationName: onEditOperationName
+          }),
+          document.getElementById('graphiql')
+        );
+        console.log('rendered!');
+      });
+
       /**
        * Put your GraphQL compliant endpoint here...
        */
@@ -116,7 +158,7 @@
       }
 
       // Render <GraphiQL /> into the body.
-      ReactDOM.render(
+      /*ReactDOM.render(
         React.createElement(GraphiQL, {
           fetcher: graphQLFetcher,
           query: parameters.query,
@@ -127,7 +169,7 @@
           onEditOperationName: onEditOperationName
         }),
         document.getElementById('graphiql')
-      );
+      );*/
     </script>
   </body>
 </html>
