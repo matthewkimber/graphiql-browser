@@ -1,5 +1,6 @@
 var gulp = require('gulp');
 var del = require('del');
+var babel = require('gulp-babel');
 
 // 1. Clean.
 //   a. Remove "dist" folder.

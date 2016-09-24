@@ -4,9 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node dist/server.js",
-    "prestart": "npm run build",
-    "build": ". ./build.sh"
+    "start": "node dist/server.js"
   },
   "babel": {
     "presets": [
