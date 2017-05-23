@@ -8,176 +8,310 @@
 -->
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>GraphiQL Browser</title>
-    <style>
-      body {
-        height: 100%;
-        margin: 0;
-        width: 100%;
-        overflow: hidden;
-        font-family: system, -apple-system, 'San Francisco', '.SFNSDisplay-Regular', 'Segoe UI', Segoe, 'Segoe WP', 'Helvetica Neue', helvetica, 'Lucida Grande', arial, sans-serif;
-      }
-      #graphiql {
-        height: 100vh;
-        background: #ccc;
-      }
 
-      .address-bar {
-        padding: 20px 0 25px 15px;
-      }
+<head>
+  <title>GraphiQL Browser</title>
+  <style>
+    body {
+      height: 100%;
+      margin: 0;
+      width: 100%;
+      overflow: hidden;
+      font-family: system, -apple-system, 'San Francisco', '.SFNSDisplay-Regular', 'Segoe UI', Segoe, 'Segoe WP', 'Helvetica Neue', helvetica, 'Lucida Grande', arial, sans-serif;
+    }
+    
+    #graphiql {
+      height: 100vh;
+      background: #ccc;
+    }
+    
+    .address-bar {
+      padding: 20px 0 25px 15px;
+    }
+    
+    #graphql-api-url,
+    #env-drop-url {
+      width: 350px;
+      border: 1px solid #bbb;
+      padding: 4px;
+      font-family: system, -apple-system, 'San Francisco', '.SFNSDisplay-Regular', 'Segoe UI', Segoe, 'Segoe WP', 'Helvetica Neue', helvetica, 'Lucida Grande', arial, sans-serif;
+    }
+    
+    #graphql-api-go {
+      background: #fdfdfd;
+      background: -webkit-linear-gradient(#fbfbfb, #f8f8f8);
+      background: linear-gradient(#fbfbfb, #f8f8f8);
+      border-width: 0.5px;
+      border-style: solid;
+      border-color: #d3d3d3 #d0d0d0 #bababa;
+      border-radius: 4px;
+      box-shadow: 0 1px 1px -1px rgba(0, 0, 0, 0.13), inset 0 1px #fff;
+      color: #444;
+      cursor: pointer;
+      display: inline-block;
+      margin: 0 5px 0;
+      padding: 2px 8px 4px;
+      text-decoration: none;
+      font-size: 18px;
+    }
+    
+    h1 {
+      color: #396;
+      font-weight: 100;
+     
+      margin: 40px 0px 20px;
+      display:inline-block;
+      
+    }
+    
+    #clockdiv {
+      font-family: sans-serif;
+      color: #fff;
+   
+      font-weight: 100;
+      text-align: center;
+      float:right;
+      position:relative;
+      bottom:20px;
 
-      #graphql-api-url {
-        width: 350px;
-        border: 1px solid #bbb;
-        padding: 4px;
-        font-family: system, -apple-system, 'San Francisco', '.SFNSDisplay-Regular', 'Segoe UI', Segoe, 'Segoe WP', 'Helvetica Neue', helvetica, 'Lucida Grande', arial, sans-serif;
-      }
 
-      #graphql-api-go {
-        background: #fdfdfd;
-        background: -webkit-linear-gradient(#fbfbfb, #f8f8f8);
-        background:         linear-gradient(#fbfbfb, #f8f8f8);
-        border-width: 0.5px;
-        border-style: solid;
-        border-color: #d3d3d3 #d0d0d0 #bababa;
-        border-radius: 4px;
-        box-shadow: 0 1px 1px -1px rgba(0, 0, 0, 0.13), inset 0 1px #fff;
-        color: #444;
-        cursor: pointer;
-        display: inline-block;
-        margin: 0 5px 0;
-        padding: 2px 8px 4px;
-        text-decoration: none;
-        font-size: 18px;
-      }
-    </style>
-    <link rel="stylesheet" href="./css/graphiql.css" />
-    <script src="js/fetch.js"></script>
-    <script src="js/react.js"></script>
-    <script src="js/react-dom.js"></script>
-    <script src="./js/graphiql.js"></script>
-  </head>
-  <body>
-    <div>
-      <div class="address-bar">
-        Endpoint URL: <input type="text" id="graphql-api-url"> <input type="button" id="graphql-api-go" class="toolbar-button" value="Go">
+    }
+    
+    #clockdiv>div {
+      padding: 5px;
+      border-radius: 3px;
+      background: #00BF96;
+      display: inline-block;
+    }
+    
+    #clockdiv div>span {
+      padding: 10px;
+      border-radius: 3px;
+      background: #00816A;
+      display: inline-block;
+    }
+    
+    .smalltext {
+      padding-top: 5px;
+      font-size: 14px;
+    }
+  </style>
+  <link rel="stylesheet" href="./css/graphiql.css" />
+  <script src="js/fetch.js"></script>
+  <script src="js/react.js"></script>
+  <script src="js/react-dom.js"></script>
+  <script src="./js/graphiql.js"></script>
+</head>
+
+<body>
+  <div>
+    <div class="address-bar">Base URL:
+      <input list="environments" name="myBrowser" id="env-drop-url" />
+      <datalist id="environments">
+        <option value="http://localhost:15982">NSK Project</option>
+        <option value="http://localhost:34278">Custom API Project</option>
+        <option value="http://nvlcmwb100:10161">NAV 1 Demo</option>
+      </datalist>
+      <input type="button" id="graphql-api-go" class="toolbar-button" value="Go">
+     
+      
+    <div id="clockdiv">
+
+        <div>
+          <span class="minutes"></span>
+          <div class="smalltext">Minutes</div>
+        </div>
+        <div>
+          <span class="seconds"></span>
+          <div class="smalltext">Seconds</div>
+        </div>
       </div>
-      <div id="graphiql"></div>
     </div>
-    <script>
-      var apiEndpointUrl = document.getElementById('graphql-api-url');
-      var goButton = document.getElementById('graphql-api-go');
 
-      goButton.addEventListener('click', function (event) {
-        console.log(apiEndpointUrl.value);
-        settings.graphApiUrl = apiEndpointUrl.value;
-        
-        console.log('unmounting react component...');
-        ReactDOM.unmountComponentAtNode(document.getElementById('graphiql'));
-        console.log('unmounted!')
-
-        console.log('rendering graphiql react component...');
-        ReactDOM.render(
-          React.createElement(GraphiQL, {
-            fetcher: graphQLFetcher,
-            query: parameters.query,
-            variables: parameters.variables,
-            operationName: parameters.operationName,
-            onEditQuery: onEditQuery,
-            onEditVariables: onEditVariables,
-            onEditOperationName: onEditOperationName
-          }),
-          document.getElementById('graphiql')
-        );
-        console.log('rendered!');
-      });
-
-      /**
-       * Put your GraphQL compliant endpoint here...
-       */
-      var settings = {
-        graphApiUrl: 'http://111.221.99.44/api/nsk/graph'
+    <div id="graphiql"></div>
+  </div>
+  <script>
+    function getTimeRemaining(endtime) {
+      var t = Date.parse(endtime) - Date.parse(new Date());
+      var seconds = Math.floor((t / 1000) % 60);
+      var minutes = Math.floor((t / 1000 / 60) % 60);
+      var hours = Math.floor((t / (1000 * 60 * 60)) % 24);
+      var days = Math.floor(t / (1000 * 60 * 60 * 24));
+      return {
+        'total': t,
+        'days': days,
+        'hours': hours,
+        'minutes': minutes,
+        'seconds': seconds
       };
+    }
 
-      /**
-       * This GraphiQL example illustrates how to use some of GraphiQL's props
-       * in order to enable reading and updating the URL parameters, making
-       * link sharing of queries a little bit easier.
-       *
-       * This is only one example of this kind of feature, GraphiQL exposes
-       * various React params to enable interesting integrations.
-       */
+    function initializeClock(id, endtime) {
+      var clock = document.getElementById(id);
 
-      // Parse the search string to get url parameters.
-      var search = window.location.search;
-      var parameters = {};
-      search.substr(1).split('&').forEach(function (entry) {
-        var eq = entry.indexOf('=');
-        if (eq >= 0) {
-          parameters[decodeURIComponent(entry.slice(0, eq))] =
-            decodeURIComponent(entry.slice(eq + 1));
+
+      var minutesSpan = clock.querySelector('.minutes');
+      var secondsSpan = clock.querySelector('.seconds');
+
+      function updateClock() {
+        var t = getTimeRemaining(endtime);
+
+
+
+        minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
+        secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
+
+        if (t.total <= 0) {
+          clearInterval(timeinterval);
+        }
+      }
+
+      updateClock();
+      var timeinterval = setInterval(updateClock, 1000);
+    }
+    
+    var deadline =0;
+
+    function setTokenTime(idleTime){
+    
+    deadline = new Date(Date.parse(new Date()) + idleTime * 60 * 1000);
+
+    }
+
+   
+            
+    
+    //var deadline = new Date(Date.parse(new Date()) + 15 * 60 * 1000);
+   
+
+    var apiEndpointUrl = document.getElementById('env-drop-url');
+    var goButton = document.getElementById('graphql-api-go');
+
+
+    goButton.addEventListener('click', function (event) {
+      console.log(apiEndpointUrl.value);
+      settings.graphApiUrl = apiEndpointUrl.value;
+      console.log(settings.graphApiUrl);
+      var xhttp = new XMLHttpRequest();
+      xhttp.open("POST", settings.graphApiUrl + "/api/nsk/v1/token", false);
+      xhttp.setRequestHeader("Content-type", "application/json");
+      xhttp.send();
+      var response = JSON.parse(xhttp.responseText);
+      settings.token = response.data.token;
+
+      setTokenTime(response.data.idleTimeoutInMinutes);
+      initializeClock('clockdiv', deadline);
+      console.log(Number.isInteger(response.data.idleTimeoutInMinutes));
+      console.log(response.data.token);
+
+
+      console.log('unmounting react component...');
+      ReactDOM.unmountComponentAtNode(document.getElementById('graphiql'));
+      console.log('unmounted!')
+
+      console.log('rendering graphiql react component...');
+      ReactDOM.render(
+        React.createElement(GraphiQL, {
+          fetcher: graphQLFetcher,
+          query: parameters.query,
+          variables: parameters.variables,
+          operationName: parameters.operationName,
+          onEditQuery: onEditQuery,
+          onEditVariables: onEditVariables,
+          onEditOperationName: onEditOperationName
+        }),
+        document.getElementById('graphiql')
+      );
+      console.log('rendered!');
+    });
+
+    /**
+     * Put your GraphQL compliant endpoint here...
+     */
+    var settings = {
+      graphApiUrl: '',
+      token: ''
+    };
+
+    /**
+     * This GraphiQL example illustrates how to use some of GraphiQL's props
+     * in order to enable reading and updating the URL parameters, making
+     * link sharing of queries a little bit easier.
+     *
+     * This is only one example of this kind of feature, GraphiQL exposes
+     * various React params to enable interesting integrations.
+     */
+
+    // Parse the search string to get url parameters.
+    var search = window.location.search;
+    var parameters = {};
+    search.substr(1).split('&').forEach(function (entry) {
+      var eq = entry.indexOf('=');
+      if (eq >= 0) {
+        parameters[decodeURIComponent(entry.slice(0, eq))] =
+          decodeURIComponent(entry.slice(eq + 1));
+      }
+    });
+
+    // if variables was provided, try to format it.
+    if (parameters.variables) {
+      try {
+        parameters.variables =
+          JSON.stringify(JSON.parse(parameters.variables), null, 2);
+      } catch (e) {
+        // Do nothing, we want to display the invalid JSON as a string, rather
+        // than present an error.
+      }
+    }
+
+    // When the query and variables string is edited, update the URL bar so
+    // that it can be easily shared
+    function onEditQuery(newQuery) {
+      parameters.query = newQuery;
+      updateURL();
+    }
+
+    function onEditVariables(newVariables) {
+      parameters.variables = newVariables;
+      updateURL();
+    }
+
+    function onEditOperationName(newOperationName) {
+      parameters.operationName = newOperationName;
+      updateURL();
+    }
+
+    function updateURL() {
+      var newSearch = '?' + Object.keys(parameters).filter(function (key) {
+        return Boolean(parameters[key]);
+      }).map(function (key) {
+        return encodeURIComponent(key) + '=' +
+          encodeURIComponent(parameters[key]);
+      }).join('&');
+      history.replaceState(null, null, newSearch);
+    }
+
+    // Defines a GraphQL fetcher using the fetch API.
+    function graphQLFetcher(graphQLParams) {
+      return fetch(settings.graphApiUrl + "/api/v1/Graph", {
+        method: 'post',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': settings.token,
+        },
+        body: JSON.stringify(graphQLParams),
+        credentials: 'omit',
+      }).then(function (response) {
+        return response.text();
+      }).then(function (responseBody) {
+        try {
+          return JSON.parse(responseBody);
+        } catch (error) {
+          return responseBody;
         }
       });
-
-      // if variables was provided, try to format it.
-      if (parameters.variables) {
-        try {
-          parameters.variables =
-            JSON.stringify(JSON.parse(parameters.variables), null, 2);
-        } catch (e) {
-          // Do nothing, we want to display the invalid JSON as a string, rather
-          // than present an error.
-        }
-      }
-
-      // When the query and variables string is edited, update the URL bar so
-      // that it can be easily shared
-      function onEditQuery(newQuery) {
-        parameters.query = newQuery;
-        updateURL();
-      }
-
-      function onEditVariables(newVariables) {
-        parameters.variables = newVariables;
-        updateURL();
-      }
-
-      function onEditOperationName(newOperationName) {
-        parameters.operationName = newOperationName;
-        updateURL();
-      }
-
-      function updateURL() {
-        var newSearch = '?' + Object.keys(parameters).filter(function (key) {
-          return Boolean(parameters[key]);
-        }).map(function (key) {
-          return encodeURIComponent(key) + '=' +
-            encodeURIComponent(parameters[key]);
-        }).join('&');
-        history.replaceState(null, null, newSearch);
-      }
-
-      // Defines a GraphQL fetcher using the fetch API.
-      function graphQLFetcher(graphQLParams) {
-        return fetch(settings.graphApiUrl, {
-          method: 'post',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(graphQLParams),
-          credentials: 'omit',
-        }).then(function (response) {
-          return response.text();
-        }).then(function (responseBody) {
-          try {
-            return JSON.parse(responseBody);
-          } catch (error) {
-            return responseBody;
-          }
-        });
-      }
+    }
 
       // Render <GraphiQL /> into the body.
       /*ReactDOM.render(
@@ -192,6 +326,7 @@
         }),
         document.getElementById('graphiql')
       );*/
-    </script>
-  </body>
+  </script>
+</body>
+
 </html>
